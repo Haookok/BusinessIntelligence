@@ -1,7 +1,7 @@
 package com.businessintelligence.entity;
 
 import lombok.Data;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Data
 @Entity
