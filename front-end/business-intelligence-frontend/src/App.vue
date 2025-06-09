@@ -3,15 +3,24 @@ import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <el-container>
+    <el-header>
+      <el-menu
+        :router="true"
+        mode="horizontal"
+        :ellipsis="false"
+      >
+        <el-menu-item index="/">首页</el-menu-item>
+        <el-menu-item index="/news">新闻分析</el-menu-item>
+        <el-menu-item index="/analysis">数据分析</el-menu-item>
+        <el-menu-item index="/user">用户分析</el-menu-item>
+      </el-menu>
+    </el-header>
+
+    <el-main>
+      <router-view></router-view>
+    </el-main>
+  </el-container>
 </template>
 
 <style scoped>
@@ -26,5 +35,16 @@ import HelloWorld from './components/HelloWorld.vue'
 }
 .logo.vue:hover {
   filter: drop-shadow(0 0 2em #42b883aa);
+}
+
+.el-header {
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+.el-main {
+  padding: 20px;
+  background-color: #f5f7fa;
+  min-height: calc(100vh - 60px);
 }
 </style>

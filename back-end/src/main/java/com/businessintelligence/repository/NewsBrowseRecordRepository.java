@@ -1,5 +1,6 @@
 package com.businessintelligence.repository;
 
+import com.businessintelligence.entity.News;
 import com.businessintelligence.entity.NewsBrowseRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
