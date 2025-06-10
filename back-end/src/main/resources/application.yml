@@ -1,6 +1,3 @@
-server:
-  port: 8080
-
 spring:
   datasource:
     url: jdbc:mysql://1.15.92.20:3306/BIDB?useSSL=false&serverTimezone=UTC
@@ -10,13 +7,17 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false                # 关闭Hibernate自带SQL打印，避免重复
     properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-        format_sql: true
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+      hibernate.format_sql: true
+      # 这里移除 statement_inspector ，用datasource-proxy做SQL日志
+      # hibernate.session_factory.statement_inspector: com.businessintelligence.config.SqlLogInterceptor
 
 logging:
   level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE 
+    # 关闭Hibernate SQL打印日志，交给datasource-proxy管理
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+    # datasource-proxy的日志级别
+    net.ttddyy.dsproxy.listener: DEBUG

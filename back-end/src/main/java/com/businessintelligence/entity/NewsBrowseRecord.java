@@ -1,19 +1,19 @@
 package com.businessintelligence.entity;
 
-import lombok.Data;
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Data
 @Entity
+@IdClass(NewsBrowseRecordId.class) // 💡 关键：声明使用联合主键类
 @Table(name = "t_news_browse_record")
 public class NewsBrowseRecord {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
+    @Id
     @Column(name = "user_id", nullable = false)
     private Integer userId;
 
+    @Id
     @Column(name = "news_id", nullable = false)
     private Integer newsId;
 
@@ -29,4 +29,4 @@ public class NewsBrowseRecord {
     @ManyToOne
     @JoinColumn(name = "news_id", insertable = false, updatable = false)
     private News news;
-} 
+}

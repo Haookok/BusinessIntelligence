@@ -1,31 +1,26 @@
 package com.businessintelligence.entity;
 
-import lombok.Data;
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Table(name = "t_query_log")
 public class QueryLog {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "created_at", columnDefinition = "DATETIME(6)")
+    private LocalDateTime createdAt;
+
+    @Column(name = "execution_time")
+    private Long executionTime; // 单位：毫秒
+
     @Column(name = "query_sql", columnDefinition = "TEXT")
     private String querySql;
 
-    @Column(name = "execution_time")
-    private Long executionTime;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "user_id")
-    private Integer userId;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
-} 
+}

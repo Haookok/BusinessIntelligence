@@ -66,17 +66,4 @@ public class NewsAnalysisController {
         return ResponseEntity.ok(browseRecordRepository.findRecommendedNews(userId, startTime));
     }
 
-    // 2.7 查询性能统计
-    @GetMapping("/query/performance")
-    public ResponseEntity<?> getQueryPerformance(
-            @RequestParam LocalDateTime startTime,
-            @RequestParam LocalDateTime endTime) {
-        return ResponseEntity.ok(queryLogRepository.findQueryPerformanceStats(startTime, endTime));
-    }
-
-    // 获取用户查询历史
-    @GetMapping("/query/history/{userId}")
-    public ResponseEntity<?> getUserQueryHistory(@PathVariable Integer userId) {
-        return ResponseEntity.ok(queryLogRepository.findByUserIdOrderByCreatedAtDesc(userId));
-    }
 } 
