@@ -47,4 +47,11 @@ public interface NewsBrowseRecordRepository extends JpaRepository<NewsBrowseReco
     List<Map<String, Object>> findUserBrowsingStatsByTimeRange(
             @Param("startTime") Integer startTime,
             @Param("endTime") Integer endTime);
+
+
+    @Query("SELECT b FROM NewsBrowseRecord b " +
+            "WHERE b.userId = ?1 AND b.startTs <= ?2 " +
+            "ORDER BY b.startTs DESC")
+    List<NewsBrowseRecord> findTop20ByUserIdAndStartTsGreaterThanOrderByStartTsDesc(
+            Integer userId, Integer timestamp);
 } 

@@ -31,4 +31,9 @@ public class QueryLogController {
         List<QueryLog> logs = queryLogService.getAllLogs();
         return ResponseEntity.ok(logs);
     }
+    // 新增：获取按执行时间倒序排列的日志
+    @GetMapping("/sorted-by-execution-time")
+    public List<QueryLog> getAllLogsByExecutionTimeDesc() {
+        return queryLogService.getAllLogsByExecutionTimeDesc();
+    }
 }

@@ -21,3 +21,10 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: WARN
     # datasource-proxy的日志级别
     net.ttddyy.dsproxy.listener: DEBUG
+
+# DeepSeek 大语言模型配置
+llm:
+    api:
+      url: https://api.deepseek.com/v1/chat/completions
+      key: sk-afd89f34a25f43aba1d8cfe4d6a4a9e5
+      model: deepseek-chat  # 可选，默认为deepseek-chat
