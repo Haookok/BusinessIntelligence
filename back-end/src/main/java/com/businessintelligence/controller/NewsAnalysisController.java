@@ -1,69 +1,55 @@
+// src/main/java/com/businessintelligence/controller/NewsAnalysisController.java
 package com.businessintelligence.controller;
 
-import com.businessintelligence.entity.*;
-import com.businessintelligence.repository.*;
+import com.businessintelligence.DTO.HotNewsDTO;
+import com.businessintelligence.DTO.NewsTrendDTO;
+import com.businessintelligence.service.NewsAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping("/api/analysis")
+@RequestMapping("/api/news-analysis")
 public class NewsAnalysisController {
 
     @Autowired
-    private NewsRepository newsRepository;
+    private NewsAnalysisService newsAnalysisService;
 
-    @Autowired
-    private NewsBrowseRecordRepository browseRecordRepository;
+    // 获取综合热度最高的10个新闻
+    @GetMapping("/top-hot-news")
+    public ResponseEntity<List<HotNewsDTO>> getTop10HotNews(
+            @RequestParam(required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+            LocalDateTime timestamp) {
 
-    @Autowired
-    private QueryLogRepository queryLogRepository;
+        // 如果未提供时间戳，则使用当前时间
+        long timestampInSeconds = timestamp != null
+                ? timestamp.toEpochSecond(ZoneOffset.ofHours(8))
+                : LocalDateTime.now().toEpochSecond(ZoneOffset.ofHours(8));
 
-    // 2.1 查询单个新闻生命周期
-    @GetMapping("/news/{newsId}/lifecycle")
-    public ResponseEntity<?> getNewsLifecycle(@PathVariable Integer newsId) {
-        return ResponseEntity.ok(newsRepository.findNewsLifecycle(newsId));
+        List<HotNewsDTO> hotNewsList = newsAnalysisService.getTop10HotNews(timestampInSeconds);
+        return ResponseEntity.ok(hotNewsList);
     }
 
-    // 2.2 查询新闻类别统计
-    @GetMapping("/category/statistics")
-    public ResponseEntity<?> getCategoryStatistics() {
-        return ResponseEntity.ok(newsRepository.findCategoryStatistics());
-    }
+    // 获取指定新闻在特定时间点前10天的热度变化趋势
+    @GetMapping("/news-trend/{newsId}")
+    public ResponseEntity<List<NewsTrendDTO>> getNewsTrend(
+            @PathVariable Integer newsId,
+            @RequestParam(required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+            LocalDateTime timestamp) {
 
-    // 2.3 查询用户兴趣变化
-    @GetMapping("/user/{userId}/interests")
-    public ResponseEntity<?> getUserInterests(@PathVariable Integer userId) {
-        return ResponseEntity.ok(browseRecordRepository.findUserInterestChanges(userId));
-    }
+        // 如果未提供时间戳，则使用当前时间
+        long timestampInSeconds = timestamp != null
+                ? timestamp.toEpochSecond(ZoneOffset.ofHours(8))
+                : LocalDateTime.now().toEpochSecond(ZoneOffset.ofHours(8));
 
-    // 2.4 多条件组合查询
-    @GetMapping("/news/search")
-    public ResponseEntity<?> searchNews(
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) String topic,
-            @RequestParam(required = false) Integer minLength,
-            @RequestParam(required = false) Integer maxLength) {
-        return ResponseEntity.ok(newsRepository.findNewsByMultipleConditions(
-                category, topic, minLength, maxLength));
+        List<NewsTrendDTO> trendList = newsAnalysisService.getNewsTrend(newsId, timestampInSeconds);
+        return ResponseEntity.ok(trendList);
     }
-
-    // 2.5 查询爆款新闻特征
-    @GetMapping("/news/viral-characteristics")
-    public ResponseEntity<?> getViralNewsCharacteristics() {
-        return ResponseEntity.ok(newsRepository.findViralNewsCharacteristics());
-    }
-
-    // 2.6 获取新闻推荐
-    @GetMapping("/news/recommendations/{userId}")
-    public ResponseEntity<?> getNewsRecommendations(
-            @PathVariable Integer userId,
-            @RequestParam Integer startTime) {
-        return ResponseEntity.ok(browseRecordRepository.findRecommendedNews(userId, startTime));
-    }
-
-} 
+}

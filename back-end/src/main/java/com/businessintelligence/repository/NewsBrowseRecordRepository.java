@@ -54,4 +54,5 @@ public interface NewsBrowseRecordRepository extends JpaRepository<NewsBrowseReco
             "ORDER BY b.startTs DESC")
     List<NewsBrowseRecord> findTop20ByUserIdAndStartTsGreaterThanOrderByStartTsDesc(
             Integer userId, Integer timestamp);
+
 } 

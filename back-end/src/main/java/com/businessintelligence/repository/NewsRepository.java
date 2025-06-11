@@ -55,14 +55,6 @@ public interface NewsRepository extends JpaRepository<News, Integer> {
             @Param("minLength") Integer minLength,
             @Param("maxLength") Integer maxLength);
 
-    // 2.5 查询爆款新闻特征
-    @Query("SELECT n.category, n.topic, AVG(n.totalBrowseNum) as avgBrowses, " +
-           "AVG(n.totalBrowseDuration) as avgDuration, " +
-           "AVG(LENGTH(n.content)) as avgContentLength " +
-           "FROM News n " +
-           "WHERE n.totalBrowseNum > (SELECT AVG(n2.totalBrowseNum) FROM News n2) " +
-           "GROUP BY n.category, n.topic")
-    List<Map<String, Object>> findViralNewsCharacteristics();
 
     List<News> findByNewsIdIn(List<Integer> newsIds);
 } 
