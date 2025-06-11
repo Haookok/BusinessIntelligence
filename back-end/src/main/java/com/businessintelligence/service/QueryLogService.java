@@ -45,4 +45,8 @@ public class QueryLogService {
             e.printStackTrace();
         }
     }
+    // 新增：获取按执行时间倒序排列的日志
+    public List<QueryLog> getAllLogsByExecutionTimeDesc() {
+        return queryLogRepository.findAllByOrderByExecutionTimeDesc();
+    }
 }

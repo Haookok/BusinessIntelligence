@@ -63,4 +63,6 @@ public interface NewsRepository extends JpaRepository<News, Integer> {
            "WHERE n.totalBrowseNum > (SELECT AVG(n2.totalBrowseNum) FROM News n2) " +
            "GROUP BY n.category, n.topic")
     List<Map<String, Object>> findViralNewsCharacteristics();
+
+    List<News> findByNewsIdIn(List<Integer> newsIds);
 } 
