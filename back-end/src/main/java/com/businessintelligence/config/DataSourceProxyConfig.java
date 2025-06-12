@@ -27,9 +27,9 @@ public class DataSourceProxyConfig {
     @Bean
     public DataSource originalDataSource() {
         HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl("jdbc:mysql://1.15.92.20:3306/BIDB?useSSL=false&serverTimezone=UTC");
-        ds.setUsername("root");
-        ds.setPassword("noSxw#t?=4wu");
+        ds.setJdbcUrl("jdbc:mysql://81.68.224.23:3306/BIDB?useSSL=false&serverTimezone=UTC");
+        ds.setUsername("remote_user");
+        ds.setPassword("remote~Ruanshu1");
         ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
         return ds;
     }
