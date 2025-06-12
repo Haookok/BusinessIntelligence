@@ -1,4 +1,4 @@
-package com.businessintelligence.service;
+package com.businessintelligence.Infrastracture.client;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;

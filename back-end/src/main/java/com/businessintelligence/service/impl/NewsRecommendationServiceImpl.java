@@ -5,8 +5,8 @@ import com.businessintelligence.entity.NewsBrowseRecord;
 import com.businessintelligence.entity.News;
 import com.businessintelligence.repository.NewsRepository;
 import com.businessintelligence.service.BrowseRecordService;
-import com.businessintelligence.service.DatabaseQueryExecutor;
-import com.businessintelligence.service.LLMClient;
+import com.businessintelligence.Infrastracture.util.DatabaseQueryExecutor;
+import com.businessintelligence.Infrastracture.client.LLMClient;
 import com.businessintelligence.service.NewsRecommendationService;
 import org.springframework.stereotype.Service;
 
