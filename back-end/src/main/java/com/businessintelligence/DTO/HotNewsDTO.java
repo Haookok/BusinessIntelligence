@@ -11,6 +11,4 @@ public class HotNewsDTO {
     private Double avgBrowseDuration;
     private Double growthRate;
     private Double comprehensiveHeat;
-
-    // getter和setter方法...
 }

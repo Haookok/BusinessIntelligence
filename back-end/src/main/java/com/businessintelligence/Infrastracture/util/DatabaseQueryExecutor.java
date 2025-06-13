@@ -50,11 +50,6 @@ public class DatabaseQueryExecutor {
             return false;
         }
 
-        // 仅允许查询t_news表
-        if (!lowerCaseSql.contains("from t_news")) {
-            return false;
-        }
-
         return true;
     }
 }
