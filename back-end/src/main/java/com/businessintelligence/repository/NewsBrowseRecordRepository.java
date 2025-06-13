@@ -55,4 +55,7 @@ public interface NewsBrowseRecordRepository extends JpaRepository<NewsBrowseReco
     List<NewsBrowseRecord> findTop20ByUserIdAndStartTsGreaterThanOrderByStartTsDesc(
             Integer userId, Integer timestamp);
 
+    @Query(value = "SELECT DISTINCT news_id FROM t_news_browse_record WHERE start_ts >= ?1 ", nativeQuery = true)
+    List<Integer> findActiveNewsIds(long fromTimestamp);
+
 } 
