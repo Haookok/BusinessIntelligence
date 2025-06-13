@@ -30,7 +30,7 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         sessions.add(session);
-        System.out.println("✅ WebSocket connected, session id: " + session.getId());
+        System.out.println(" WebSocket connected, session id: " + session.getId());
 
         if (started.compareAndSet(false, true)) {
             scheduler.scheduleAtFixedRate(this::sendRealtimeData, 0, 1000, TimeUnit.MILLISECONDS);
@@ -41,7 +41,7 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         sessions.remove(session);
-        System.out.println("❌ WebSocket closed, session id: " + session.getId());
+        System.out.println(" WebSocket closed, session id: " + session.getId());
 
         // 不再 shutdown scheduler，避免重连时报错
         // 定时任务中会跳过没有连接的情况
@@ -53,16 +53,16 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
             return;
         }
 
-        System.out.println("🔄 Triggered sendRealtimeData at " + System.currentTimeMillis());
+        System.out.println(" Triggered sendRealtimeData at " + System.currentTimeMillis());
         String jsonData = getLatestDataFromDB();
 
         for (WebSocketSession session : sessions) {
             if (session.isOpen()) {
                 try {
                     session.sendMessage(new TextMessage(jsonData));
-                    System.out.println("📤 Sent data to session: " + session.getId());
+                    System.out.println(" Sent data to session: " + session.getId());
                 } catch (IOException e) {
-                    System.err.println("⚠ Failed to send message to session " + session.getId());
+                    System.err.println(" Failed to send message to session " + session.getId());
                     e.printStackTrace();
                 }
             }
@@ -73,14 +73,14 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
         List<Object[]> rawList;
 
         if (lastSentTimestamp == null) {
-            System.out.println("📥 First-time full query without timestamp filter.");
+            System.out.println(" First-time full query without timestamp filter.");
             rawList = newsLiveRepository.getSecondlyBrowseInitial(572);
         } else {
-            System.out.println("📥 Querying DB since timestamp (s): " + lastSentTimestamp);
+            System.out.println(" Querying DB since timestamp (s): " + lastSentTimestamp);
             rawList = newsLiveRepository.getSecondlyBrowseSince(572, lastSentTimestamp);
         }
 
-        System.out.println("📦 Retrieved " + rawList.size() + " rows from DB.");
+        System.out.println(" Retrieved " + rawList.size() + " rows from DB.");
         List<MinutelyBrowseDTO> dtoList = new ArrayList<>();
         long maxTimestamp = lastSentTimestamp != null ? lastSentTimestamp : 0;
 
@@ -95,16 +95,16 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
 
         if (!dtoList.isEmpty()) {
             lastSentTimestamp = maxTimestamp + 1;
-            System.out.println("🕒 Updated lastSentTimestamp to: " + lastSentTimestamp);
+            System.out.println(" Updated lastSentTimestamp to: " + lastSentTimestamp);
         } else {
-            System.out.println("⏳ No new data. Timestamp remains unchanged.");
+            System.out.println(" No new data. Timestamp remains unchanged.");
             lastSentTimestamp = null;
         }
 
         try {
             return objectMapper.writeValueAsString(dtoList);
         } catch (JsonProcessingException e) {
-            System.err.println("❌ Failed to convert DTO list to JSON.");
+            System.err.println(" Failed to convert DTO list to JSON.");
             e.printStackTrace();
             return "[]";
         }
