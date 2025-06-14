@@ -1,5 +1,6 @@
 package com.businessintelligence.controller;
 
+import com.businessintelligence.DTO.HotNewsDTO;
 import com.businessintelligence.service.NewsHeatTrendService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class NewsHeatTrendController {
     }
 
     /**
-     * 手动触发计算新闻热度趋势
+     * 手动触发计算新闻热度趋势，测试用
      * @param newsId 可选参数，传新闻ID只计算该新闻，不传或传空表示全部新闻
      */
     @PostMapping("/refresh")
@@ -38,7 +39,7 @@ public class NewsHeatTrendController {
     }
 
     @GetMapping("/top10")
-    public List<Map<String, Object>> getTop10ByDay(
+    public HotNewsDTO getTop10ByDay(
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date targetDate) {
 
         return newsHeatTrendService.queryTop10NewsHeatTrendByDay(new java.sql.Date(targetDate.getTime()));

@@ -44,7 +44,7 @@ public class QueryLogServiceImpl implements QueryLogService {
 
     @Override
     public PageResult<QueryLog> getLogsByPage(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "executionTime"));
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
         Page<QueryLog> pageResult = queryLogRepository.findAll(pageRequest);
 
         return new PageResult<>(
