@@ -2,6 +2,7 @@ package com.businessintelligence.config;
 
 import com.businessintelligence.repository.NewsLiveRepository;
 import com.businessintelligence.repository.NewsRepository;
+import com.businessintelligence.websocket.CategoryMinuteStatWebSocketHandler;
 import com.businessintelligence.websocket.DataWebSocketHandler;
 import com.businessintelligence.websocket.UserCategoryStatWebSocketHandler;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,8 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(new DataWebSocketHandler(newsLiveRepository), "/ws/data").setAllowedOrigins("*");
         registry.addHandler(new UserCategoryStatWebSocketHandler(newsLiveRepository), "/ws/category").setAllowedOrigins("*");
+        registry.addHandler(new CategoryMinuteStatWebSocketHandler(newsLiveRepository), "/ws/minute-category-stats").setAllowedOrigins("*");
+
     }
 }
 

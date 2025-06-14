@@ -9,9 +9,7 @@ import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -27,8 +25,11 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
 
     private final NewsLiveRepository newsLiveRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private volatile Long lastSentTimestamp = null; // 秒级时间戳
     private final AtomicBoolean started = new AtomicBoolean(false);
+
+    // 每个session独立的lastSentTimestamp & newsId
+    private final ConcurrentHashMap<WebSocketSession, Integer> sessionNewsIdMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<WebSocketSession, Long> sessionLastTimestampMap = new ConcurrentHashMap<>();
 
     public DataWebSocketHandler(NewsLiveRepository newsLiveRepository) {
         this.newsLiveRepository = newsLiveRepository;
@@ -53,8 +54,23 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
+        try {
+            String payload = message.getPayload();
+            int newsId = Integer.parseInt(payload.trim());
+            sessionNewsIdMap.put(session, newsId);
+            sessionLastTimestampMap.put(session, null); // 初始化时间戳
+            System.out.println("Received newsId " + newsId + " from session " + session.getId());
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid newsId format from session " + session.getId() + ": " + message.getPayload());
+        }
+    }
+
+    @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         sessions.remove(session);
+        sessionNewsIdMap.remove(session);
+        sessionLastTimestampMap.remove(session);
         System.out.println("WebSocket closed, session id: " + session.getId());
 
         if (sessions.isEmpty()) {
@@ -68,60 +84,45 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
             return;
         }
 
-        System.out.println("Triggered sendRealtimeData at " + System.currentTimeMillis());
-        String jsonData = getLatestDataFromDB();
-
         for (WebSocketSession session : sessions) {
-            if (session.isOpen()) {
-                try {
-                    session.sendMessage(new TextMessage(jsonData));
-                    System.out.println("Sent data to session: " + session.getId());
-                } catch (IOException e) {
-                    System.err.println("Failed to send message to session " + session.getId());
-                    e.printStackTrace();
-                }
+            if (!session.isOpen()) continue;
+
+            Integer newsId = sessionNewsIdMap.get(session);
+            if (newsId == null) continue;
+
+            Long lastTimestamp = sessionLastTimestampMap.get(session);
+            List<Object[]> rawList;
+
+            if (lastTimestamp == null) {
+                System.out.println("Full query for session " + session.getId());
+                rawList = newsLiveRepository.getSecondlyBrowseInitial(newsId);
+            } else {
+                System.out.println("Incremental query for session " + session.getId() + " since " + lastTimestamp);
+                rawList = newsLiveRepository.getSecondlyBrowseSince(newsId, lastTimestamp);
             }
-        }
-    }
 
-    private String getLatestDataFromDB() {
-        List<Object[]> rawList;
+            List<MinutelyBrowseDTO> dtoList = new ArrayList<>();
+            long maxTimestamp = lastTimestamp != null ? lastTimestamp : 0;
 
-        if (lastSentTimestamp == null) {
-            System.out.println("First-time full query without timestamp filter.");
-            rawList = newsLiveRepository.getSecondlyBrowseInitial(572);
-        } else {
-            System.out.println("Querying DB since timestamp (s): " + lastSentTimestamp);
-            rawList = newsLiveRepository.getSecondlyBrowseSince(572, lastSentTimestamp);
-        }
-
-        System.out.println("Retrieved " + rawList.size() + " rows from DB.");
-        List<MinutelyBrowseDTO> dtoList = new ArrayList<>();
-        long maxTimestamp = lastSentTimestamp != null ? lastSentTimestamp : 0;
-
-        for (Object[] row : rawList) {
-            long secondTs = ((Number) row[0]).longValue();
-            long count = ((Number) row[1]).longValue();
-            dtoList.add(new MinutelyBrowseDTO(secondTs, count));
-            if (secondTs > maxTimestamp) {
-                maxTimestamp = secondTs;
+            for (Object[] row : rawList) {
+                long ts = ((Number) row[0]).longValue();
+                long count = ((Number) row[1]).longValue();
+                dtoList.add(new MinutelyBrowseDTO(ts, count));
+                if (ts > maxTimestamp) maxTimestamp = ts;
             }
-        }
 
-        if (!dtoList.isEmpty()) {
-            lastSentTimestamp = maxTimestamp + 1;
-            System.out.println("Updated lastSentTimestamp to: " + lastSentTimestamp);
-        } else {
-            System.out.println("No new data. Timestamp remains unchanged.");
-            lastSentTimestamp = null;
-        }
+            if (!dtoList.isEmpty()) {
+                sessionLastTimestampMap.put(session, maxTimestamp + 1);
+            }
 
-        try {
-            return objectMapper.writeValueAsString(dtoList);
-        } catch (JsonProcessingException e) {
-            System.err.println("Failed to convert DTO list to JSON.");
-            e.printStackTrace();
-            return "[]";
+            try {
+                String json = objectMapper.writeValueAsString(dtoList);
+                session.sendMessage(new TextMessage(json));
+                System.out.println("Sent data to session: " + session.getId());
+            } catch (IOException e) {
+                System.err.println("Failed to send data to session " + session.getId());
+                e.printStackTrace();
+            }
         }
     }
 
