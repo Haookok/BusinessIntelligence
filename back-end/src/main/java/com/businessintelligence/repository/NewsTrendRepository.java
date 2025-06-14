@@ -111,7 +111,7 @@ public interface NewsTrendRepository extends JpaRepository<NewsHeatTrendEntity, 
             "   growth_rate AS growthRate, " +
             "   comprehensive_heat AS comprehensiveHeat " +
             "FROM t_news_heat_trend " +
-            "WHERE DATE(date) = :targetDate " +  // ← 加上 DATE()
+            "WHERE DATE(date) = :targetDate " +
             "ORDER BY comprehensive_heat DESC " +
             "LIMIT 10", nativeQuery = true)
     List<Map<String, Object>> findTop10NewsByComprehensiveHeat(@Param("targetDate") Date targetDate);

@@ -62,4 +62,26 @@ ORDER BY ts
     List<Object[]> getCategoryDistributionInitial(@Param("userId") Long userId);
 
 
+    @Query(value = """
+SELECT 
+    category, SUM(browse_count) AS count, FLOOR(stamp / 60) * 60 AS minute_ts
+FROM t_news_daily_category
+GROUP BY category, minute_ts
+ORDER BY minute_ts
+""", nativeQuery = true)
+    List<Object[]> getCategoryMinuteStatsInitial();
+
+
+    @Query(value = """
+SELECT 
+    category, SUM(browse_count) AS count, FLOOR(stamp / 60) * 60 AS minute_ts
+FROM t_news_daily_category
+WHERE FLOOR(stamp / 60) * 60 > :since
+GROUP BY category, minute_ts
+ORDER BY minute_ts
+""", nativeQuery = true)
+    List<Object[]> getCategoryMinuteStatsSince(@Param("since") Long since);
+
+
+
 }

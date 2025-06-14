@@ -1,0 +1,19 @@
+
+Z	java:S106)"9Replace this use of System.out or System.err by a logger.(²›Ã¬øÿÿÿÿ8Øû†Ğö2
+U	java:S1060"9Replace this use of System.out or System.err by a logger.(ÛØ¡÷8È¶ÿóö2
+U	java:S1064"9Replace this use of System.out or System.err by a logger.(Ü¯ÖÍ8È¶ÿóö2
+U	java:S106?"9Replace this use of System.out or System.err by a logger.(Äü¾´8Ï¶ÿóö2
+Z	java:S106A"9Replace this use of System.out or System.err by a logger.(Çé‚™ûÿÿÿÿ8Ñ¶ÿóö2
+T	java:S106J"9Replace this use of System.out or System.err by a logger.(ÆˆÎ8Ó¶ÿóö2
+Z	java:S106M"9Replace this use of System.out or System.err by a logger.( İÂ—üÿÿÿÿ8Ô¶ÿóö2
+o
+java:S3776Q"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(ÛÄâ8Ú¶ÿóö2
+U	java:S106S"9Replace this use of System.out or System.err by a logger.(Õ¿øô8Û¶ÿóö2
+U	java:S106a"9Replace this use of System.out or System.err by a logger.(´Œ·‰8Ş¶ÿóö2
+U	java:S106d"9Replace this use of System.out or System.err by a logger.(çÛœ³8à¶ÿóö2
+Z	java:S106y"9Replace this use of System.out or System.err by a logger.(ÈÌŸÇÿÿÿÿÿ8ç¶ÿóö2
+Z	java:S106{"9Replace this use of System.out or System.err by a logger.(öİÃ…şÿÿÿÿ8è¶ÿóö2
+[	java:S106„"9Replace this use of System.out or System.err by a logger.(…“æÒúÿÿÿÿ8ê¶ÿóö2
+q
+java:S1128"ORemove this unused import 'com.fasterxml.jackson.core.JsonProcessingException'.(ßÔïÇûÿÿÿÿ8îëÿóö2
+z	java:S135W"YReduce the total number of break and continue statements in this loop to use at most one.(ŠİÍ™øÿÿÿÿ8ë¶ÿóö2

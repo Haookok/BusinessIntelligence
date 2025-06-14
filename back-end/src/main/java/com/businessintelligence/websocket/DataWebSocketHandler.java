@@ -66,22 +66,13 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {
         try {
-            // 从消息中提取 newsId
-            Integer newsId = extractNewsIdFromMessage(message.getPayload());
-            if (newsId == null) {
-                System.err.println("提取的 newsId 为 null，跳过处理，session ID: " + session.getId());
-                return;
-            }
-
-            // 确保 session 和 newsId 都不为 null
-            if (session != null && newsId != null) {
-                sessionNewsIdMap.put(session, newsId);
-            } else {
-                System.err.println("检测到 null 键或值，跳过处理，session ID: " + session.getId());
-            }
-        } catch (Exception e) {
-            System.err.println("处理 WebSocket 消息时发生错误，session ID: " + session.getId());
-            e.printStackTrace();
+            String payload = message.getPayload();
+            int newsId = Integer.parseInt(payload.trim());
+            sessionNewsIdMap.put(session, newsId);
+            sessionLastTimestampMap.put(session, null); // 初始化时间戳
+            System.out.println("Received newsId " + newsId + " from session " + session.getId());
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid newsId format from session " + session.getId() + ": " + message.getPayload());
         }
     }
 

@@ -1,5 +1,7 @@
 package com.businessintelligence.service;
 
+import com.businessintelligence.DTO.HotNewsDTO;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -11,5 +13,5 @@ public interface NewsHeatTrendService {
     //特定新闻十天内热度变化
     List<Map<String, Object>> queryTrendBeforeDate(int newsId, Date referenceDate);
     //最热的10个新闻
-    List<Map<String, Object>> queryTop10NewsHeatTrendByDay(Date targetDate);
+    HotNewsDTO queryTop10NewsHeatTrendByDay(Date targetDate);
 }
