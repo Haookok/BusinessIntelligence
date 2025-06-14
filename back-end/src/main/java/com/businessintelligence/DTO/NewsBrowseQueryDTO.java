@@ -15,8 +15,7 @@ public class NewsBrowseQueryDTO {
     private Integer maxContentLength;  // 最大内容长度
     private Integer userId;            // 指定用户
     private List<Integer> userIdList;  // 多个用户
+    private Integer page;
+    private Integer size;
 
-
-    private int page = 1;
-    private int size = 10;
 }

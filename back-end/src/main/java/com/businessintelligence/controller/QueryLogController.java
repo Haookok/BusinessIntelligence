@@ -1,5 +1,6 @@
 package com.businessintelligence.controller;
 
+import com.businessintelligence.Infrastracture.page.PageResult;
 import com.businessintelligence.entity.QueryLog;
 import com.businessintelligence.service.QueryLogService;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +31,21 @@ public class QueryLogController {
         List<QueryLog> logs = queryLogService.getAllLogs();
         return ResponseEntity.ok(logs);
     }
-    // 新增：获取按执行时间倒序排列的日志
-    @GetMapping("/sorted-by-execution-time")
-    public List<QueryLog> getAllLogsByExecutionTimeDesc() {
-        return queryLogService.getAllLogsByExecutionTimeDesc();
+    @GetMapping("/logs")
+    public PageResult<QueryLog> getLogs(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        return queryLogService.getLogsByPage(page, size);
     }
+
+
+
+    @GetMapping("/sorted-by-execution-time")
+    public PageResult<QueryLog> getLogsByExecutionTimeDesc(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return queryLogService.getLogsByExecutionTimeDescByPage(page, size);
+    }
+
 }

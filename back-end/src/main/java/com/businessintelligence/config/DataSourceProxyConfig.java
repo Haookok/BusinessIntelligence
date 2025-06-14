@@ -23,7 +23,7 @@ public class DataSourceProxyConfig {
         this.eventPublisher = eventPublisher;
     }
 
-    // 先创建原始数据源，注意这里要和你的 application.yml 保持一致
+
     @Bean
     public DataSource originalDataSource() {
         HikariDataSource ds = new HikariDataSource();
