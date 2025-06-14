@@ -4,10 +4,10 @@ import com.businessintelligence.DTO.CategoryMinuteStatDTO;
 import com.businessintelligence.repository.NewsLiveRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PreDestroy;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
@@ -37,10 +37,14 @@ public class CategoryMinuteStatWebSocketHandler extends TextWebSocketHandler {
         sessions.add(session);
         System.out.println("WebSocket connected, session id: " + session.getId());
 
+        // ✅ 每个 session 独立发送初始历史数据
+        sendInitialDataToSession(session);
+
+        // 启动定时任务，仅一次
         if (started.compareAndSet(false, true)) {
             scheduler.scheduleAtFixedRate(() -> {
                 try {
-                    sendRealtimeCategoryMinuteData();
+                    sendRealtimeCategoryMinuteData(); // 增量推送
                 } catch (Exception e) {
                     System.err.println("Error in scheduled task:");
                     e.printStackTrace();
@@ -73,9 +77,9 @@ public class CategoryMinuteStatWebSocketHandler extends TextWebSocketHandler {
             if (session.isOpen()) {
                 try {
                     session.sendMessage(new TextMessage(jsonData));
-                    System.out.println("Sent data to session: " + session.getId());
+                    System.out.println("✅ Sent data to session: " + session.getId());
                 } catch (IOException e) {
-                    System.err.println("Failed to send message to session " + session.getId());
+                    System.err.println("❌ Failed to send message to session " + session.getId());
                     e.printStackTrace();
                 }
             }
@@ -108,7 +112,7 @@ public class CategoryMinuteStatWebSocketHandler extends TextWebSocketHandler {
 
         if (!dtoList.isEmpty()) {
             lastSentTimestamp = maxTimestamp;
-            System.out.println("Updated lastSentTimestamp to: " + lastSentTimestamp);
+            System.out.println("📌 Updated lastSentTimestamp to: " + lastSentTimestamp);
         } else {
             System.out.println("ℹ No new data. Timestamp remains unchanged.");
         }
@@ -116,9 +120,36 @@ public class CategoryMinuteStatWebSocketHandler extends TextWebSocketHandler {
         try {
             return objectMapper.writeValueAsString(dtoList);
         } catch (JsonProcessingException e) {
-            System.err.println("Failed to convert DTO list to JSON.");
+            System.err.println("❌ Failed to convert DTO list to JSON.");
             e.printStackTrace();
             return "[]";
+        }
+    }
+
+    private void sendInitialDataToSession(WebSocketSession session) {
+        try {
+            List<Object[]> rawList = newsLiveRepository.getCategoryMinuteStatsInitial();
+
+            List<CategoryMinuteStatDTO> dtoList = new ArrayList<>();
+            long maxTimestamp = 0;
+
+            for (Object[] row : rawList) {
+                String category = (String) row[0];
+                long count = ((Number) row[1]).longValue();
+                long minuteTs = ((Number) row[2]).longValue();
+                dtoList.add(new CategoryMinuteStatDTO(category, count, minuteTs));
+                if (minuteTs > maxTimestamp) {
+                    maxTimestamp = minuteTs;
+                }
+            }
+
+            String jsonData = objectMapper.writeValueAsString(dtoList);
+            session.sendMessage(new TextMessage(jsonData));
+
+            System.out.println("✅ Sent initial data to session " + session.getId());
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send initial data to session " + session.getId());
+            e.printStackTrace();
         }
     }
 
