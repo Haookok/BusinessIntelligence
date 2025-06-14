@@ -3,6 +3,7 @@ package com.businessintelligence.config;
 import com.businessintelligence.repository.NewsLiveRepository;
 import com.businessintelligence.repository.NewsRepository;
 import com.businessintelligence.websocket.DataWebSocketHandler;
+import com.businessintelligence.websocket.UserCategoryStatWebSocketHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.*;
 
@@ -10,12 +11,7 @@ import org.springframework.web.socket.config.annotation.*;
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
-//    private final NewsRepository newsRepository;
     private final NewsLiveRepository newsLiveRepository;
-
-//    public WebSocketConfig(NewsRepository newsRepository) {
-//        this.newsRepository = newsRepository;
-//    }
     public WebSocketConfig(NewsLiveRepository newsLiveRepository) {
         this.newsLiveRepository = newsLiveRepository;
     }
@@ -23,6 +19,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(new DataWebSocketHandler(newsLiveRepository), "/ws/data").setAllowedOrigins("*");
+        registry.addHandler(new UserCategoryStatWebSocketHandler(newsLiveRepository), "/ws/category").setAllowedOrigins("*");
     }
 }
 

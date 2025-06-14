@@ -21,7 +21,6 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
     private final NewsLiveRepository newsLiveRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private volatile Long lastSentTimestamp = null; // 秒级时间戳
-
     private final AtomicBoolean started = new AtomicBoolean(false);
 
     public DataWebSocketHandler(NewsLiveRepository newsLiveRepository) {
@@ -44,15 +43,13 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
         sessions.remove(session);
         System.out.println(" WebSocket closed, session id: " + session.getId());
 
-        if (sessions.isEmpty() && started.compareAndSet(true, false)) {
-            scheduler.shutdown();
-            System.out.println("⚠ No sessions left. Scheduler shutdown.");
-        }
+        // 不再 shutdown scheduler，避免重连时报错
+        // 定时任务中会跳过没有连接的情况
     }
 
     private void sendRealtimeData() {
         if (sessions.isEmpty()) {
-            System.out.println(" No active sessions, skipping sendRealtimeData");
+            System.out.println("⏸ No active sessions, skipping sendRealtimeData");
             return;
         }
 
@@ -75,12 +72,9 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
     private String getLatestDataFromDB() {
         List<Object[]> rawList;
 
-        // 是否首次查询：不带时间戳查询
         if (lastSentTimestamp == null) {
             System.out.println(" First-time full query without timestamp filter.");
             rawList = newsLiveRepository.getSecondlyBrowseInitial(572);
-            long maxTimestamp = -1;
-            lastSentTimestamp = maxTimestamp;
         } else {
             System.out.println(" Querying DB since timestamp (s): " + lastSentTimestamp);
             rawList = newsLiveRepository.getSecondlyBrowseSince(572, lastSentTimestamp);
@@ -99,7 +93,6 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
             }
         }
 
-        // 更新 lastSentTimestamp（首次也初始化）
         if (!dtoList.isEmpty()) {
             lastSentTimestamp = maxTimestamp + 1;
             System.out.println(" Updated lastSentTimestamp to: " + lastSentTimestamp);
