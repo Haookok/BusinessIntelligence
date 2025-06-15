@@ -130,28 +130,38 @@ public class CategoryMinuteStatWebSocketHandler extends TextWebSocketHandler {
         try {
             List<Object[]> rawList = newsLiveRepository.getCategoryMinuteStatsInitial();
 
-            List<CategoryMinuteStatDTO> dtoList = new ArrayList<>();
+            int batchSize = 2000;
+            List<CategoryMinuteStatDTO> buffer = new ArrayList<>();
             long maxTimestamp = 0;
 
-            for (Object[] row : rawList) {
+            for (int i = 0; i < rawList.size(); i++) {
+                Object[] row = rawList.get(i);
                 String category = (String) row[0];
                 long count = ((Number) row[1]).longValue();
                 long minuteTs = ((Number) row[2]).longValue();
-                dtoList.add(new CategoryMinuteStatDTO(category, count, minuteTs));
+
+                buffer.add(new CategoryMinuteStatDTO(category, count, minuteTs));
                 if (minuteTs > maxTimestamp) {
                     maxTimestamp = minuteTs;
                 }
+
+                // 发送一个批次
+                if (buffer.size() >= batchSize || i == rawList.size() - 1) {
+                    String jsonData = objectMapper.writeValueAsString(buffer);
+                    session.sendMessage(new TextMessage(jsonData));
+                    buffer.clear();
+                    Thread.sleep(30); // 控制速率，避免爆栈
+                }
             }
 
-            String jsonData = objectMapper.writeValueAsString(dtoList);
-            session.sendMessage(new TextMessage(jsonData));
-
             System.out.println("✅ Sent initial data to session " + session.getId());
+
         } catch (Exception e) {
             System.err.println("❌ Failed to send initial data to session " + session.getId());
             e.printStackTrace();
         }
     }
+
 
     @PreDestroy
     public void onDestroy() {

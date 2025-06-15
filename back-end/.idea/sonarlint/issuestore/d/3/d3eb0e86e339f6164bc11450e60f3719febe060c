@@ -19,8 +19,4 @@ U	java:S106‰"9Replace this use of System.out or System.err by a logger.(³é¦o8
 [	java:S106"9Replace this use of System.out or System.err by a logger.(Íä•—øÿÿÿÿ8Ëè•úö2
 U	java:S106"9Replace this use of System.out or System.err by a logger.(ú©ÌT8Ëè•úö2
 [	java:S106™"9Replace this use of System.out or System.err by a logger.(…“æÒúÿÿÿÿ8Ëè•úö2
-q
-java:S1128"ORemove this unused import 'com.fasterxml.jackson.core.JsonProcessingException'.(ßÔïÇûÿÿÿÿ8ü×öùö2
-R
-java:S1128"0Remove this unused import 'java.io.IOException'.(ªº»Úıÿÿÿÿ8Ûè•úö2
 z	java:S135e"YReduce the total number of break and continue statements in this loop to use at most one.(ŠİÍ™øÿÿÿÿ8Ûè•úö2
