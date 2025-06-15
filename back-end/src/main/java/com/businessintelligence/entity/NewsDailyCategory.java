@@ -19,9 +19,6 @@ public class NewsDailyCategory {
     @Data
     @Embeddable
     public static class NewsDailyCategoryId implements java.io.Serializable {
-        @Column(name = "day_stamp", nullable = false)
-        private Integer dayStamp;
-
         @Column(name = "category", nullable = false)
         private String category;
     }

@@ -20,7 +20,7 @@ public interface NewsLiveRepository extends JpaRepository<News, Long> {
     SELECT 
         FLOOR(start_ts / 60) * 60 AS minute_ts,
         COUNT(*) as count
-    FROM tempo
+    FROM t_news_browse_record
     WHERE news_id = :newsId
     GROUP BY minute_ts
     ORDER BY minute_ts
@@ -31,8 +31,8 @@ public interface NewsLiveRepository extends JpaRepository<News, Long> {
     SELECT 
         FLOOR(start_ts / 60) * 60 AS minute_ts,
         COUNT(*) as count
-    FROM tempo
-    WHERE news_id = :newsId AND start_ts > FROM_UNIXTIME(:since)
+    FROM t_news_browse_record
+    WHERE news_id = :newsId AND start_ts >= :since
     GROUP BY minute_ts
     ORDER BY minute_ts
     """, nativeQuery = true)

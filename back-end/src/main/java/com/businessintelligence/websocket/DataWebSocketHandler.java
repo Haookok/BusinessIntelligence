@@ -2,7 +2,6 @@ package com.businessintelligence.websocket;
 
 import com.businessintelligence.DTO.MinutelyBrowseDTO;
 import com.businessintelligence.repository.NewsLiveRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PreDestroy;
 import org.springframework.web.socket.*;
@@ -65,14 +64,17 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {
+        String payload = message.getPayload();
+        System.out.println("📥 接收到前端消息原文（payload）: \"" + payload + "\" 来自 session " + session.getId());
+
         try {
-            String payload = message.getPayload();
             int newsId = Integer.parseInt(payload.trim());
             sessionNewsIdMap.put(session, newsId);
-            sessionLastTimestampMap.put(session, null); // 初始化时间戳
-            System.out.println("Received newsId " + newsId + " from session " + session.getId());
+            sessionLastTimestampMap.put(session, -1L); // 初始化为未定义
+            System.out.println("✅ 解析成功，newsId: " + newsId + "，已存储到 session " + session.getId());
         } catch (NumberFormatException e) {
-            System.err.println("Invalid newsId format from session " + session.getId() + ": " + message.getPayload());
+            System.err.println("❌ 无效的 newsId 格式，session " + session.getId() + " 发送了: \"" + payload + "\"");
+            e.printStackTrace();
         }
     }
 
@@ -103,7 +105,7 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
             Long lastTimestamp = sessionLastTimestampMap.get(session);
             List<Object[]> rawList;
 
-            if (lastTimestamp == null) {
+            if (lastTimestamp == null || lastTimestamp < 0) {
                 System.out.println("Full query for session " + session.getId());
                 rawList = newsLiveRepository.getSecondlyBrowseInitial(newsId);
             } else {
@@ -112,7 +114,7 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
             }
 
             List<MinutelyBrowseDTO> dtoList = new ArrayList<>();
-            long maxTimestamp = lastTimestamp != null ? lastTimestamp : 0;
+            long maxTimestamp = lastTimestamp != null && lastTimestamp > 0 ? lastTimestamp : 0;
 
             for (Object[] row : rawList) {
                 long ts = ((Number) row[0]).longValue();
@@ -132,6 +134,11 @@ public class DataWebSocketHandler extends TextWebSocketHandler {
             } catch (IOException e) {
                 System.err.println("Failed to send data to session " + session.getId());
                 e.printStackTrace();
+                try {
+                    session.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }

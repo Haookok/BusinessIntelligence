@@ -1,18 +1,26 @@
 
->
-java:S1170#"!Make this final field static too.(¢‘Ó8‰Æ€Ğö2
-Z	java:S106,"9Replace this use of System.out or System.err by a logger.(²›Ã¬øÿÿÿÿ8¡Æ€Ğö2
-Z	java:S1063"9Replace this use of System.out or System.err by a logger.(Şå„×øÿÿÿÿ8¡Æ€Ğö2
-Z	java:S1067"9Replace this use of System.out or System.err by a logger.(¥Ø•‚ÿÿÿÿÿ8¡Æ€Ğö2
-T	java:S106>"9Replace this use of System.out or System.err by a logger.(ÆˆÎ8¡Æ€Ğö2
-Z	java:S106A"9Replace this use of System.out or System.err by a logger.( İÂ—üÿÿÿÿ8¡Æ€Ğö2
-U	java:S106G"9Replace this use of System.out or System.err by a logger.(±äŠ8¡Æ€Ğö2
-U	java:S106K"9Replace this use of System.out or System.err by a logger.(¿‰•ó8¥Æ€Ğö2
-Z	java:S106R"9Replace this use of System.out or System.err by a logger.(ÈÌŸÇÿÿÿÿÿ8¥Æ€Ğö2
-Z	java:S106T"9Replace this use of System.out or System.err by a logger.(ù§şÀüÿÿÿÿ8¥Æ€Ğö2
-T	java:S106_"9Replace this use of System.out or System.err by a logger.(øı¥h8¥Æ€Ğö2
-Z	java:S106b"9Replace this use of System.out or System.err by a logger.(å°šïıÿÿÿÿ8¥Æ€Ğö2
-U	java:S106u"9Replace this use of System.out or System.err by a logger.(æÎ™À8©Æ€Ğö2
-U	java:S106w"9Replace this use of System.out or System.err by a logger.(×€ò8©Æ€Ğö2
-U	java:S106~"9Replace this use of System.out or System.err by a logger.(êÿÿ›8©Æ€Ğö2
-[	java:S106‡"9Replace this use of System.out or System.err by a logger.(…“æÒúÿÿÿÿ8©Æ€Ğö2
+Z	java:S106-"9Replace this use of System.out or System.err by a logger.(²›Ã¬øÿÿÿÿ8¼è•úö2
+Z	java:S1064"9Replace this use of System.out or System.err by a logger.(Şå„×øÿÿÿÿ8Ëè•úö2
+Z	java:S1068"9Replace this use of System.out or System.err by a logger.(¥Ø•‚ÿÿÿÿÿ8Ëè•úö2
+U	java:S106?"9Replace this use of System.out or System.err by a logger.(ô Õ‡8Ëè•úö2
+Z	java:S106D"9Replace this use of System.out or System.err by a logger.(ƒµşÖøÿÿÿÿ8Ëè•úö2
+U	java:S106J"9Replace this use of System.out or System.err by a logger.(ÔªÍ‚8Ëè•úö2
+U	java:S106L"9Replace this use of System.out or System.err by a logger.(ŒœšÁ8Ëè•úö2
+T	java:S106N"9Replace this use of System.out or System.err by a logger.(‹ô¬F8Ëè•úö2
+T	java:S106X"9Replace this use of System.out or System.err by a logger.(ÆˆÎ8Ëè•úö2
+Z	java:S106["9Replace this use of System.out or System.err by a logger.( İÂ—üÿÿÿÿ8Ëè•úö2
+t
+java:S3776_"RRefactor this method to reduce its Cognitive Complexity from 22 to the 15 allowed.(Ë« ôÿÿÿÿÿ8Ëè•úö2
+U	java:S106a"9Replace this use of System.out or System.err by a logger.(±äŠ8Ëè•úö2
+Z	java:S106p"9Replace this use of System.out or System.err by a logger.(ôÕÖƒøÿÿÿÿ8Ëè•úö2
+Z	java:S106s"9Replace this use of System.out or System.err by a logger.(—Ô¯ßüÿÿÿÿ8Ëè•úö2
+V	java:S106†"9Replace this use of System.out or System.err by a logger.(­ŒøŸ8Ëè•úö2
+U	java:S106‰"9Replace this use of System.out or System.err by a logger.(³é¦o8Ëè•úö2
+[	java:S106"9Replace this use of System.out or System.err by a logger.(Íä•—øÿÿÿÿ8Ëè•úö2
+U	java:S106"9Replace this use of System.out or System.err by a logger.(ú©ÌT8Ëè•úö2
+[	java:S106™"9Replace this use of System.out or System.err by a logger.(…“æÒúÿÿÿÿ8Ëè•úö2
+q
+java:S1128"ORemove this unused import 'com.fasterxml.jackson.core.JsonProcessingException'.(ßÔïÇûÿÿÿÿ8ü×öùö2
+R
+java:S1128"0Remove this unused import 'java.io.IOException'.(ªº»Úıÿÿÿÿ8Ûè•úö2
+z	java:S135e"YReduce the total number of break and continue statements in this loop to use at most one.(ŠİÍ™øÿÿÿÿ8Ûè•úö2
